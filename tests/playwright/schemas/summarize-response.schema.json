@@ -1,0 +1,68 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "POST /summarize response",
+  "type": "object",
+  "required": ["request_id", "study_id", "summary", "facts", "citations", "sources", "model"],
+  "properties": {
+    "request_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+    },
+    "study_id": { "type": "string" },
+    "summary": { "type": "string", "minLength": 1 },
+    "facts": {
+      "type": "object",
+      "required": [
+        "enrolled_patients",
+        "treatment_arms",
+        "start_date",
+        "completion_date",
+        "primary_endpoint",
+        "adverse_event_count"
+      ],
+      "properties": {
+        "enrolled_patients": { "type": ["integer", "null"] },
+        "adverse_event_count": { "type": ["integer", "null"] },
+        "start_date": { "type": ["string", "null"], "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+        "completion_date": { "type": ["string", "null"], "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+        "primary_endpoint": { "type": ["string", "null"] },
+        "treatment_arms": {
+          "type": ["array", "null"],
+          "items": {
+            "type": "object",
+            "required": ["name", "patients"],
+            "properties": {
+              "name": { "type": "string", "pattern": "^[A-Za-z0-9]" },
+              "patients": { "type": "integer", "minimum": 0 }
+            }
+          }
+        }
+      }
+    },
+    "citations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["fact", "source_id", "version", "passage_id"],
+        "properties": {
+          "fact": { "type": "string" },
+          "source_id": { "type": "string" },
+          "version": { "type": "string" },
+          "passage_id": { "type": "string", "pattern": "^P\\d+$" }
+        }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["source_id", "version"]
+      }
+    },
+    "model": {
+      "type": "object",
+      "required": ["adapter", "name", "version", "temperature"]
+    }
+  }
+}

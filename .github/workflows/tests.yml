@@ -1,0 +1,46 @@
+# Runs both suites on every push and pull request.
+# Everything here is deterministic (fake model, synthetic fixtures), so a red run means a real regression.
+name: tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # playwright.config.js starts the service with .venv/bin/python, so install into a venv.
+      - name: Install Python dependencies
+        run: |
+          python -m venv .venv
+          .venv/bin/python -m pip install -r requirements.txt
+
+      - name: pytest evaluation suite
+        run: .venv/bin/python -m pytest -v
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+
+      # API tests only use Playwright's request fixture, so no browsers need installing.
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Playwright API suite
+        run: npx playwright test
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 14

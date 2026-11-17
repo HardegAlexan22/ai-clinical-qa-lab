@@ -1,0 +1,25 @@
+{
+  "study_id": "study_001",
+  "authoritative_source": { "source_id": "SYN-001-CSR", "version": "2.0" },
+  "facts": {
+    "enrolled_patients": { "value": 250, "passage_id": "P3" },
+    "treatment_arms": {
+      "value": [
+        { "name": "ZX-101 10 mg once daily", "patients": 125 },
+        { "name": "placebo", "patients": 125 }
+      ],
+      "passage_id": "P4"
+    },
+    "start_date": { "value": "2024-03-04", "passage_id": "P5" },
+    "completion_date": { "value": "2025-06-30", "passage_id": "P5" },
+    "primary_endpoint": {
+      "value": "change from baseline in seated systolic blood pressure at Week 12",
+      "passage_id": "P6"
+    },
+    "adverse_event_count": { "value": 38, "passage_id": "P7" }
+  },
+  "known_wrong_values": {
+    "enrolled_patients": [275],
+    "adverse_event_count": [41]
+  }
+}

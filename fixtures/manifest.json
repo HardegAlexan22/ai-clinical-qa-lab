@@ -1,0 +1,18 @@
+{
+  "documents": [
+    {
+      "study_id": "study_001",
+      "doc_id": "SYN-001-CSR",
+      "version": "2.0",
+      "status": "current",
+      "path": "study_001.md"
+    },
+    {
+      "study_id": "study_001",
+      "doc_id": "SYN-001-CSR",
+      "version": "1.0",
+      "status": "superseded",
+      "path": "study_001_outdated.md"
+    }
+  ]
+}
