@@ -21,4 +21,9 @@ async function summarize(request, body = {}) {
   });
 }
 
-module.exports = { API_KEY, AUTH, groundTruth, validateSummarize, summarize };
+// Builds a test case ID for generated tests, e.g. testId('VAL', 3) -> 'VAL-03'.
+function testId(prefix, n) {
+  return `${prefix}-${String(n).padStart(2, '0')}`;
+}
+
+module.exports = { API_KEY, AUTH, groundTruth, validateSummarize, summarize, testId };

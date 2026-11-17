@@ -19,6 +19,24 @@ The model is a deterministic **mock**, which keeps results repeatable. The point
 
 Done: the service, synthetic fixtures, ground truth, the Playwright API suite (37 tests), the pytest evaluation suite with seeded faults and stage localization (20 tests), and CI running both suites on every push. Next: repeated-run variability, document integrity checks and release-gate metrics.
 
+## Test case IDs
+
+Every test has a stable ID, so a failure can be referred to by ID (for example "FAULT-05 failed"). New tests get the next free number in their area; existing IDs never change.
+
+| Prefix | Area | Suite |
+|---|---|---|
+| `AUTH` | API key checks | Playwright |
+| `VAL` | Input validation (422) | Playwright |
+| `ERR` | Not found and wrong method (404, 405) | Playwright |
+| `GATE` | Fault injection is off unless enabled | Playwright (GATE-01), pytest (GATE-02, 03) |
+| `CON` | Response contract and model metadata | Playwright |
+| `FACT` | Facts match ground truth, plus consistency rules | Playwright |
+| `CITE` | Citations point to passages that support the claim | Playwright |
+| `TRACE` | Trace storage, document hashes, no key leaks | Playwright |
+| `REG` | Regressions for bugs found while building | Playwright |
+| `BASE` | Healthy baseline: no findings, every fact survives every stage | pytest |
+| `FAULT` | Seeded faults are detected and localized | pytest |
+
 ## Run the Python evaluation suite
 
 ```powershell
@@ -34,14 +52,14 @@ It calls the app in-process, so no server is needed. `evals/checks.py` holds the
 
 Faults can be switched on per request with `"fault": "<name>"`, but only when `QA_LAB_ENABLE_FAULTS=1`. Otherwise the API returns 403, so a normal deployment can't be made to misbehave. The pytest suite enables them.
 
-| Fault | Simulates | Caught by | Localized to |
-|---|---|---|---|
-| `extraction_corruption` | Bad text conversion turns 250 into 275 | `incorrect_value`, `inconsistent_facts` | extraction |
-| `stale_retrieval` | Superseded v1.0 retrieved | `non_authoritative_citation` on every fact, `incorrect_value` | retrieval |
-| `hallucinated_endpoint` | Model invents a plausible endpoint | `unsupported_claim`, `citation_unsupported`, `incorrect_value` | model |
-| `wrong_citation` | Right value, cited to the wrong passage | `citation_unsupported` only | model (citation) |
-| `missing_fact` | Model omits the adverse event count | `missing_fact` | model |
-| `postprocess_change` | App code changes 250 to 275 after the model | `incorrect_value`, `unsupported_claim`, `citation_unsupported`, `inconsistent_facts` | postprocess |
+| ID | Fault | Simulates | Caught by | Localized to |
+|---|---|---|---|---|
+| FAULT-01 | `extraction_corruption` | Bad text conversion turns 250 into 275 | `incorrect_value`, `inconsistent_facts` | extraction |
+| FAULT-02 | `stale_retrieval` | Superseded v1.0 retrieved | `non_authoritative_citation` on every fact, `incorrect_value` | retrieval |
+| FAULT-03 | `hallucinated_endpoint` | Model invents a plausible endpoint | `unsupported_claim`, `citation_unsupported`, `incorrect_value` | model |
+| FAULT-04 | `missing_fact` | Model omits the adverse event count | `missing_fact` | model |
+| FAULT-05 | `postprocess_change` | App code changes 250 to 275 after the model | `incorrect_value`, `unsupported_claim`, `citation_unsupported`, `inconsistent_facts` | postprocess |
+| FAULT-06 | `wrong_citation` | Right value, cited to the wrong passage | `citation_unsupported` only | model (citation) |
 
 ## Run the API tests
 
